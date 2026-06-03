@@ -1,0 +1,11 @@
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+env = [
+    "ENVIRONMENT=testing",
+    "DATABASE_URL=sqlite+aiosqlite:///./test.db",
+    "SECRET_KEY=test-secret-key-not-for-production",
+]

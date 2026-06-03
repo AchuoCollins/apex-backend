@@ -1,0 +1,162 @@
+{
+  "model_version": "1.0.0",
+  "n_train": 1600,
+  "n_test": 400,
+  "accuracy": 0.6875,
+  "precision": 0.7515,
+  "recall": 0.6875,
+  "f1_score": 0.7042,
+  "cv_f1_mean": 0.737,
+  "cv_f1_std": 0.0135,
+  "confusion_matrix": [
+    [
+      103,
+      5,
+      8,
+      5,
+      2,
+      2,
+      9
+    ],
+    [
+      1,
+      38,
+      3,
+      10,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      2,
+      46,
+      11,
+      6,
+      4,
+      15
+    ],
+    [
+      0,
+      0,
+      3,
+      23,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      2,
+      9,
+      0,
+      1
+    ],
+    [
+      2,
+      0,
+      1,
+      7,
+      2,
+      17,
+      2
+    ],
+    [
+      0,
+      0,
+      8,
+      8,
+      2,
+      1,
+      39
+    ]
+  ],
+  "classification_report": {
+    "arms": {
+      "precision": 0.9716981132075472,
+      "recall": 0.7686567164179104,
+      "f1-score": 0.8583333333333333,
+      "support": 134.0
+    },
+    "calves": {
+      "precision": 0.8444444444444444,
+      "recall": 0.7169811320754716,
+      "f1-score": 0.7755102040816326,
+      "support": 53.0
+    },
+    "chest": {
+      "precision": 0.6571428571428571,
+      "recall": 0.5476190476190477,
+      "f1-score": 0.5974025974025974,
+      "support": 84.0
+    },
+    "forearms": {
+      "precision": 0.3484848484848485,
+      "recall": 0.8518518518518519,
+      "f1-score": 0.4946236559139785,
+      "support": 27.0
+    },
+    "glutes": {
+      "precision": 0.4090909090909091,
+      "recall": 0.6923076923076923,
+      "f1-score": 0.5142857142857142,
+      "support": 13.0
+    },
+    "legs": {
+      "precision": 0.7083333333333334,
+      "recall": 0.5483870967741935,
+      "f1-score": 0.6181818181818182,
+      "support": 31.0
+    },
+    "shoulders": {
+      "precision": 0.582089552238806,
+      "recall": 0.6724137931034483,
+      "f1-score": 0.624,
+      "support": 58.0
+    },
+    "accuracy": 0.6875,
+    "macro avg": {
+      "precision": 0.6458977225632495,
+      "recall": 0.6854596185928022,
+      "f1-score": 0.6403339033141534,
+      "support": 400.0
+    },
+    "weighted avg": {
+      "precision": 0.7515247570395593,
+      "recall": 0.6875,
+      "f1-score": 0.7042417875595985,
+      "support": 400.0
+    }
+  },
+  "feature_importances": {
+    "height_cm": 0.0011,
+    "weight_kg": 0.0,
+    "body_fat_pct": 0.0015,
+    "chest_cm": 0.0174,
+    "waist_cm": 0.0014,
+    "shoulders_cm": 0.0158,
+    "arms_cm": 0.0037,
+    "forearms_cm": 0.0,
+    "neck_cm": 0.0044,
+    "thighs_cm": 0.0511,
+    "calves_cm": 0.0111,
+    "ratio_shoulder_to_waist": 0.118,
+    "ratio_chest_to_waist": 0.1758,
+    "ratio_hip_to_waist": 0.1358,
+    "ratio_thigh_to_waist": 0.1066,
+    "ratio_calf_to_thigh": 0.1003,
+    "ratio_arm_to_neck": 0.1359,
+    "ratio_forearm_to_arm": 0.1202
+  },
+  "classes": [
+    "arms",
+    "calves",
+    "chest",
+    "forearms",
+    "glutes",
+    "legs",
+    "shoulders"
+  ]
+}
