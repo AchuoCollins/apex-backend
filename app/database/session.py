@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import MetaData
+from urllib.parse import urlsplit
 from app.core.config import settings
 
 # Naming conventions for Alembic migrations
@@ -19,12 +20,17 @@ class Base(DeclarativeBase):
     metadata = metadata
 
 
+_db_host = (urlsplit(settings.DATABASE_URL).hostname or "").lower()
+_is_remote_db = _db_host not in ("", "localhost", "127.0.0.1", "db", "postgres")
+
 engine = create_async_engine(
     settings.DATABASE_URL,
     pool_size=settings.DATABASE_POOL_SIZE,
     max_overflow=settings.DATABASE_MAX_OVERFLOW,
+    pool_pre_ping=True,
     echo=settings.DEBUG,
     future=True,
+    connect_args={"ssl": "require"} if _is_remote_db else {},
 )
 
 AsyncSessionLocal = async_sessionmaker(

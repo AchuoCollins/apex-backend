@@ -1,7 +1,27 @@
 from pydantic_settings import BaseSettings
 from pydantic import field_validator
 from typing import List
+from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
 import secrets
+
+
+def _normalize_database_url(url: str) -> str:
+    """Make any standard Postgres URL compatible with SQLAlchemy + asyncpg.
+
+    - Render/Heroku expose URLs as ``postgres://`` which SQLAlchemy rejects.
+    - asyncpg does not understand libpq query params like ``sslmode`` or
+      ``channel_binding`` — they raise ``InvalidArgumentError`` at connect time.
+    """
+    if not url:
+        return url
+    parts = urlsplit(url)
+    scheme = parts.scheme
+    if scheme in ("postgres", "postgresql"):
+        scheme = "postgresql+asyncpg"
+    # Strip libpq-only query params that asyncpg rejects.
+    drop = {"sslmode", "channel_binding", "gssencmode", "target_session_attrs"}
+    q = [(k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True) if k not in drop]
+    return urlunsplit((scheme, parts.netloc, parts.path, urlencode(q), parts.fragment))
 
 
 class Settings(BaseSettings):
@@ -37,6 +57,11 @@ class Settings(BaseSettings):
         if v not in allowed:
             raise ValueError(f"ENVIRONMENT must be one of {allowed}")
         return v
+
+    @field_validator("DATABASE_URL")
+    @classmethod
+    def normalize_database_url(cls, v: str) -> str:
+        return _normalize_database_url(v)
 
     @property
     def is_development(self) -> bool:
