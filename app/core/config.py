@@ -2,23 +2,16 @@ from pydantic_settings import BaseSettings
 from pydantic import field_validator
 from typing import List
 from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
-import secrets
+import secrets, json
 
 
 def _normalize_database_url(url: str) -> str:
-    """Make any standard Postgres URL compatible with SQLAlchemy + asyncpg.
-
-    - Render/Heroku expose URLs as ``postgres://`` which SQLAlchemy rejects.
-    - asyncpg does not understand libpq query params like ``sslmode`` or
-      ``channel_binding`` — they raise ``InvalidArgumentError`` at connect time.
-    """
     if not url:
         return url
     parts = urlsplit(url)
     scheme = parts.scheme
     if scheme in ("postgres", "postgresql"):
         scheme = "postgresql+asyncpg"
-    # Strip libpq-only query params that asyncpg rejects.
     drop = {"sslmode", "channel_binding", "gssencmode", "target_session_attrs"}
     q = [(k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True) if k not in drop]
     return urlunsplit((scheme, parts.netloc, parts.path, urlencode(q), parts.fragment))
@@ -29,23 +22,12 @@ class Settings(BaseSettings):
     APP_NAME: str = "APEX — AI Physique Analyzer"
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = False
-    ENVIRONMENT: str = "production"  # development | production | testing
+    ENVIRONMENT: str = "production"
 
     # ── API ──────────────────────────────────────────────
     API_V1_PREFIX: str = "/api"
     ALLOWED_HOSTS: List[str] = ["*"]
-    CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:5173","https://apex-frontend-71uo.onrender.com"]
-
-@field_validator("CORS_ORIGINS", mode="before")
-@classmethod
-def parse_cors_origins(cls, v):
-    if isinstance(v, str):
-        import json
-        try:
-            return json.loads(v)
-        except Exception:
-            return [origin.strip() for origin in v.split(",")]
-    return v
+    CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:5173", "https://apex-frontend-71uo.onrender.com"]
 
     # ── Database ─────────────────────────────────────────
     DATABASE_URL: str = "postgresql+asyncpg://apex:apex_pass@localhost:5432/apex_db"
@@ -60,6 +42,16 @@ def parse_cors_origins(cls, v):
 
     # ── Security ─────────────────────────────────────────
     BCRYPT_ROUNDS: int = 12
+
+    @field_validator("CORS_ORIGINS", mode="before")  # ← INSIDE the class
+    @classmethod
+    def parse_cors_origins(cls, v):
+        if isinstance(v, str):
+            try:
+                return json.loads(v)
+            except Exception:
+                return [origin.strip() for origin in v.split(",")]
+        return v
 
     @field_validator("ENVIRONMENT")
     @classmethod
