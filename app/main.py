@@ -15,6 +15,32 @@ from app.api.events.routes      import router as events_router
 from app.api.dashboard.routes   import router as dashboard_router
 
 
+import sys, traceback
+
+_imports = [
+    "app.core.config",
+    "app.api.auth.routes",
+    "app.api.users.routes",
+    "app.api.metrics.routes",
+    "app.api.exercises.routes",
+    "app.api.training.routes",
+    "app.api.health.routes",
+    "app.api.analysis.routes",
+    "app.api.focus_areas.routes",
+    "app.api.events.routes",
+    "app.api.dashboard.routes",
+]
+
+for _mod in _imports:
+    try:
+        __import__(_mod)
+        print(f"OK: {_mod}", flush=True)
+    except Exception:
+        print(f"FAILED: {_mod}", flush=True)
+        traceback.print_exc()
+        sys.exit(1)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup and shutdown events."""
