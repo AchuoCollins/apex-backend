@@ -36,6 +36,17 @@ class Settings(BaseSettings):
     ALLOWED_HOSTS: List[str] = ["*"]
     CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:5173","https://apex-frontend-71uo.onrender.com"]
 
+@field_validator("CORS_ORIGINS", mode="before")
+@classmethod
+def parse_cors_origins(cls, v):
+    if isinstance(v, str):
+        import json
+        try:
+            return json.loads(v)
+        except Exception:
+            return [origin.strip() for origin in v.split(",")]
+    return v
+
     # ── Database ─────────────────────────────────────────
     DATABASE_URL: str = "postgresql+asyncpg://apex:apex_pass@localhost:5432/apex_db"
     DATABASE_POOL_SIZE: int = 10
