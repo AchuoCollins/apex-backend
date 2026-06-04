@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     # ── API ──────────────────────────────────────────────
     API_V1_PREFIX: str = "/api"
     ALLOWED_HOSTS: List[str] = ["*"]
-    CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:5173"]
+    CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:5173","https://apex-frontend-71uo.onrender.com"]
 
     # ── Database ─────────────────────────────────────────
     DATABASE_URL: str = "postgresql+asyncpg://apex:apex_pass@localhost:5432/apex_db"
